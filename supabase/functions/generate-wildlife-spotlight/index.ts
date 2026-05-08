@@ -71,7 +71,26 @@ serve(async (req) => {
       }),
     });
 
-    if (!aiResponse.ok) throw new Error(`AI error: ${aiResponse.status}`);
+    if (!aiResponse.ok) {
+      const errText = await aiResponse.text();
+      console.error(`AI gateway error ${aiResponse.status}: ${errText}`);
+      // Fallback: re-activate the most recent past spotlight so the homepage doesn't go stale
+      const { data: prev } = await supabase
+        .from("wildlife_spotlight")
+        .select("id")
+        .order("featured_date", { ascending: false })
+        .limit(1)
+        .maybeSingle();
+      if (prev?.id) {
+        await supabase.from("wildlife_spotlight").update({ is_active: false }).eq("is_active", true);
+        await supabase.from("wildlife_spotlight").update({ is_active: true }).eq("id", prev.id);
+      }
+      return new Response(JSON.stringify({
+        success: false,
+        fallback: true,
+        error: `AI gateway error ${aiResponse.status}: ${errText}`,
+      }), { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+    }
     const aiData = await aiResponse.json();
     let content = aiData.choices?.[0]?.message?.content || "";
     
