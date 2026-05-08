@@ -1,0 +1,148 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500&family=Inter:wght@300;400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* African Safari Palette */
+    --background: 40 20% 97%;
+    --foreground: 30 15% 12%;
+
+    --card: 40 25% 99%;
+    --card-foreground: 30 15% 12%;
+
+    --popover: 40 25% 99%;
+    --popover-foreground: 30 15% 12%;
+
+    /* Safari Green - primary brand */
+    --primary: 152 55% 32%;
+    --primary-foreground: 40 20% 97%;
+
+    /* Warm Sand */
+    --secondary: 36 30% 92%;
+    --secondary-foreground: 30 15% 12%;
+
+    /* Muted earth */
+    --muted: 36 20% 93%;
+    --muted-foreground: 30 10% 45%;
+
+    /* Golden accent */
+    --accent: 38 85% 55%;
+    --accent-foreground: 30 15% 12%;
+
+    /* Warm terracotta destructive */
+    --destructive: 12 70% 50%;
+    --destructive-foreground: 40 20% 97%;
+
+    --border: 36 20% 88%;
+    --input: 36 20% 88%;
+    --ring: 152 55% 32%;
+
+    --radius: 0.75rem;
+
+    /* Custom tokens */
+    --sunset: 25 90% 55%;
+    --sunset-foreground: 40 20% 97%;
+    --earth: 30 30% 35%;
+    --earth-foreground: 40 20% 97%;
+    --sky: 200 60% 50%;
+    --sky-foreground: 40 20% 97%;
+
+    /* Gradients */
+    --gradient-hero: linear-gradient(135deg, hsl(152 55% 32% / 0.9), hsl(30 30% 35% / 0.8));
+    --gradient-sunset: linear-gradient(135deg, hsl(25 90% 55%), hsl(38 85% 55%));
+    --gradient-earth: linear-gradient(135deg, hsl(30 30% 35%), hsl(152 55% 32%));
+
+    /* Shadows */
+    --shadow-card: 0 4px 20px -4px hsl(30 15% 12% / 0.08);
+    --shadow-elevated: 0 12px 40px -8px hsl(30 15% 12% / 0.12);
+    --shadow-glow: 0 0 30px hsl(152 55% 32% / 0.15);
+
+    --sidebar-background: 40 20% 97%;
+    --sidebar-foreground: 30 15% 12%;
+    --sidebar-primary: 152 55% 32%;
+    --sidebar-primary-foreground: 40 20% 97%;
+    --sidebar-accent: 36 30% 92%;
+    --sidebar-accent-foreground: 30 15% 12%;
+    --sidebar-border: 36 20% 88%;
+    --sidebar-ring: 152 55% 32%;
+  }
+
+  .dark {
+    --background: 30 15% 8%;
+    --foreground: 40 20% 93%;
+    --card: 30 15% 11%;
+    --card-foreground: 40 20% 93%;
+    --popover: 30 15% 11%;
+    --popover-foreground: 40 20% 93%;
+    --primary: 152 50% 45%;
+    --primary-foreground: 30 15% 8%;
+    --secondary: 30 15% 16%;
+    --secondary-foreground: 40 20% 93%;
+    --muted: 30 15% 16%;
+    --muted-foreground: 36 15% 55%;
+    --accent: 38 80% 50%;
+    --accent-foreground: 30 15% 8%;
+    --destructive: 12 65% 40%;
+    --destructive-foreground: 40 20% 93%;
+    --border: 30 15% 18%;
+    --input: 30 15% 18%;
+    --ring: 152 50% 45%;
+    --sidebar-background: 30 15% 8%;
+    --sidebar-foreground: 40 20% 93%;
+    --sidebar-primary: 152 50% 45%;
+    --sidebar-primary-foreground: 30 15% 8%;
+    --sidebar-accent: 30 15% 16%;
+    --sidebar-accent-foreground: 40 20% 93%;
+    --sidebar-border: 30 15% 18%;
+    --sidebar-ring: 152 50% 45%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground font-body antialiased;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-display;
+  }
+}
+
+@layer utilities {
+  .text-gradient-sunset {
+    @apply bg-clip-text text-transparent;
+    background-image: var(--gradient-sunset);
+  }
+
+  .text-gradient-earth {
+    @apply bg-clip-text text-transparent;
+    background-image: var(--gradient-earth);
+  }
+
+  .bg-gradient-hero {
+    background-image: var(--gradient-hero);
+  }
+
+  .bg-gradient-sunset {
+    background-image: var(--gradient-sunset);
+  }
+
+  .shadow-card {
+    box-shadow: var(--shadow-card);
+  }
+
+  .shadow-elevated {
+    box-shadow: var(--shadow-elevated);
+  }
+
+  .shadow-glow {
+    box-shadow: var(--shadow-glow);
+  }
+}

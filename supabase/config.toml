@@ -1,0 +1,10 @@
+project_id = "gdxotardhpzrwlwjktvu"
+
+[functions.travel-assistant]
+verify_jwt = false
+
+[functions.create-payment]
+verify_jwt = false
+
+[functions.admin-api]
+verify_jwt = false
