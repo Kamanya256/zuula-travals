@@ -74,23 +74,37 @@ serve(async (req) => {
     if (!aiResponse.ok) {
       const errText = await aiResponse.text();
       console.error(`AI gateway error ${aiResponse.status}: ${errText}`);
-      // Fallback: re-activate the most recent past spotlight so the homepage doesn't go stale
-      const { data: prev } = await supabase
+      // Fallback: rotate to a random previous spotlight so the homepage stays fresh
+      // even when AI credits are exhausted. All past spotlights are reused interchangeably.
+      const { data: pastList } = await supabase
         .from("wildlife_spotlight")
-        .select("id")
+        .select("id, animal_name")
         .order("featured_date", { ascending: false })
-        .limit(1)
-        .maybeSingle();
-      if (prev?.id) {
+        .limit(50);
+      if (pastList && pastList.length > 0) {
+        // Prefer a different one than what's currently active
+        const { data: currentActive } = await supabase
+          .from("wildlife_spotlight")
+          .select("id")
+          .eq("is_active", true)
+          .maybeSingle();
+        const pool = pastList.filter((p: any) => p.id !== currentActive?.id);
+        const chosen = (pool.length ? pool : pastList)[Math.floor(Math.random() * (pool.length ? pool.length : pastList.length))];
         await supabase.from("wildlife_spotlight").update({ is_active: false }).eq("is_active", true);
-        await supabase.from("wildlife_spotlight").update({ is_active: true }).eq("id", prev.id);
+        await supabase.from("wildlife_spotlight").update({ is_active: true, featured_date: new Date().toISOString().split("T")[0] }).eq("id", chosen.id);
+        return new Response(JSON.stringify({
+          success: true,
+          fallback: true,
+          rotated_to: chosen.animal_name,
+        }), { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } });
       }
       return new Response(JSON.stringify({
         success: false,
-        fallback: true,
+        fallback: false,
         error: `AI gateway error ${aiResponse.status}: ${errText}`,
       }), { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
+
     const aiData = await aiResponse.json();
     let content = aiData.choices?.[0]?.message?.content || "";
     
