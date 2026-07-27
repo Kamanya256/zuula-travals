@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { lazy, Suspense } from "react";
 import Layout from "./components/Layout";
+import { ThemeProvider } from "./components/ThemeProvider";
 import HomePage from "./pages/HomePage";
 import AboutPage from "./pages/AboutPage";
 import PackagesPage from "./pages/PackagesPage";
@@ -85,6 +86,18 @@ const AdminBusinessSpotlights = lazy(() => import("./pages/admin/AdminBusinessSp
 const AdminBusinessNews = lazy(() => import("./pages/admin/AdminBusinessNews"));
 const AdminChatbotConversations = lazy(() => import("./pages/admin/AdminChatbotConversations"));
 const BusinessSpotlightDetailPage = lazy(() => import("./pages/BusinessSpotlightDetailPage"));
+const InvestmentPage = lazy(() => import("./pages/InvestmentPage"));
+const InvestmentDetailPage = lazy(() => import("./pages/InvestmentDetailPage"));
+const BusinessDirectoryPage = lazy(() => import("./pages/BusinessDirectoryPage"));
+const MagazinePage = lazy(() => import("./pages/MagazinePage"));
+const MagazineDetailPage = lazy(() => import("./pages/MagazineDetailPage"));
+const ZulaTVPage = lazy(() => import("./pages/ZulaTVPage"));
+const AdminInvestmentOpportunities = lazy(() => import("./pages/admin/AdminInvestmentOpportunities"));
+const AdminBusinessDirectory = lazy(() => import("./pages/admin/AdminBusinessDirectory"));
+const AdminMagazine = lazy(() => import("./pages/admin/AdminMagazine"));
+const AdminZulaTV = lazy(() => import("./pages/admin/AdminZulaTV"));
+const AdminTestimonials = lazy(() => import("./pages/admin/AdminTestimonials"));
+const AdminHeroSlides = lazy(() => import("./pages/admin/AdminHeroSlides"));
 const BusinessNewsPage = lazy(() => import("./pages/BusinessNewsPage"));
 const BusinessNewsDetailPage = lazy(() => import("./pages/BusinessNewsDetailPage"));
 
@@ -102,6 +115,7 @@ const A = ({ children }: { children: React.ReactNode }) => (
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
+    <ThemeProvider>
     <TooltipProvider>
       <Toaster />
       <Sonner />
@@ -148,6 +162,13 @@ const App = () => (
           <Route element={<Layout><Suspense fallback={<AdminFallback />}><BusinessNewsDetailPage /></Suspense></Layout>} path="/business-news/:slug" />
           <Route element={<Layout><Suspense fallback={<AdminFallback />}><BusinessSpotlightDetailPage /></Suspense></Layout>} path="/business/:slug" />
 
+          <Route element={<Layout><Suspense fallback={<AdminFallback />}><InvestmentPage /></Suspense></Layout>} path="/investment" />
+          <Route element={<Layout><Suspense fallback={<AdminFallback />}><InvestmentDetailPage /></Suspense></Layout>} path="/investment/:slug" />
+          <Route element={<Layout><Suspense fallback={<AdminFallback />}><BusinessDirectoryPage /></Suspense></Layout>} path="/business-directory" />
+          <Route element={<Layout><Suspense fallback={<AdminFallback />}><MagazinePage /></Suspense></Layout>} path="/magazine" />
+          <Route element={<Layout><Suspense fallback={<AdminFallback />}><MagazineDetailPage /></Suspense></Layout>} path="/magazine/:slug" />
+          <Route element={<Layout><Suspense fallback={<AdminFallback />}><ZulaTVPage /></Suspense></Layout>} path="/zula-tv" />
+
           {/* Admin routes */}
           <Route path="/admin" element={<A><AdminOverview /></A>} />
           <Route path="/admin/bookings" element={<A><AdminBookings /></A>} />
@@ -190,10 +211,18 @@ const App = () => (
           <Route path="/admin/business-news" element={<A><AdminBusinessNews /></A>} />
           <Route path="/admin/chatbot-conversations" element={<A><AdminChatbotConversations /></A>} />
 
+          <Route path="/admin/investment" element={<A><AdminInvestmentOpportunities /></A>} />
+          <Route path="/admin/business-directory" element={<A><AdminBusinessDirectory /></A>} />
+          <Route path="/admin/magazine" element={<A><AdminMagazine /></A>} />
+          <Route path="/admin/zula-tv" element={<A><AdminZulaTV /></A>} />
+          <Route path="/admin/testimonials" element={<A><AdminTestimonials /></A>} />
+          <Route path="/admin/hero-slides" element={<A><AdminHeroSlides /></A>} />
+
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
     </TooltipProvider>
+    </ThemeProvider>
   </QueryClientProvider>
 );
 

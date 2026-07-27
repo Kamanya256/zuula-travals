@@ -5,6 +5,7 @@ import { ArrowRight, MapPin, Users, Star, Shield, Plane, Hotel, Truck, Car, Cale
 import heroImage from "@/assets/hero-uganda.jpg";
 import WildlifeSpotlight from "@/components/WildlifeSpotlight";
 import BusinessSpotlight from "@/components/BusinessSpotlight";
+import HomeRails from "@/components/HomeRails";
 import gorillaImg from "@/assets/gorilla-trekking.jpg";
 import adventureImg from "@/assets/adventure-nile.jpg";
 import cultureImg from "@/assets/culture-uganda.jpg";
@@ -293,6 +294,8 @@ export default function HomePage() {
           </div>
         </div>
       </section>
+
+      <HomeRails />
 
       {/* Why Choose Us */}
       <section className="py-20 bg-secondary/50">

@@ -39,6 +39,12 @@ const servicesItems = [
 ];
 
 const contentItems = [
+  { title: "Hero Slides", url: "/admin/hero-slides", icon: Image },
+  { title: "Investment", url: "/admin/investment", icon: BriefcaseBusiness },
+  { title: "Business Directory", url: "/admin/business-directory", icon: Building },
+  { title: "Magazine", url: "/admin/magazine", icon: Newspaper },
+  { title: "Zula TV", url: "/admin/zula-tv", icon: Image },
+  { title: "Testimonials", url: "/admin/testimonials", icon: Star },
   { title: "Media", url: "/admin/media", icon: Image },
   { title: "FAQs", url: "/admin/faqs", icon: HelpCircle },
   { title: "Events", url: "/admin/events", icon: Calendar },

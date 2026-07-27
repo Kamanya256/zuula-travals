@@ -5,6 +5,7 @@ import zulaLogo from "@/assets/zula-logo.jpeg";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
 import GoogleTranslate from "@/components/GoogleTranslate";
+import ThemeToggle from "@/components/ThemeToggle";
 
 const navLinks = [
   { label: "Home", path: "/" },
@@ -33,7 +34,18 @@ const navLinks = [
       { label: "Boat Rides", path: "/boat-rides" },
     ],
   },
-  { label: "News", path: "/news" },
+  { label: "Investment", path: "/investment" },
+  {
+    label: "Media",
+    path: "#",
+    children: [
+      { label: "News", path: "/news" },
+      { label: "Business News", path: "/business-news" },
+      { label: "Zula Magazine", path: "/magazine" },
+      { label: "Zula TV", path: "/zula-tv" },
+    ],
+  },
+  { label: "Directory", path: "/business-directory" },
   {
     label: "Explore",
     path: "#",
@@ -140,6 +152,7 @@ export default function SiteNavbar() {
 
           {/* CTA + Auth + Mobile toggle */}
           <div className="flex items-center gap-3">
+            <ThemeToggle className="w-9 h-9" />
             {user ? (
               <div className="hidden md:flex items-center gap-2">
                 <Button asChild variant="ghost" size="sm">
