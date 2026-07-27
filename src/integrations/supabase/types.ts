@@ -278,6 +278,78 @@ export type Database = {
           },
         ]
       }
+      business_directory: {
+        Row: {
+          address: string | null
+          city: string | null
+          country: string | null
+          cover_image_url: string | null
+          created_at: string
+          description: string | null
+          email: string | null
+          gallery_images: string[] | null
+          id: string
+          is_active: boolean
+          is_featured: boolean
+          is_verified: boolean
+          logo_url: string | null
+          name: string
+          phone: string | null
+          products: string | null
+          sector: string | null
+          services: string | null
+          slug: string
+          updated_at: string
+          website: string | null
+        }
+        Insert: {
+          address?: string | null
+          city?: string | null
+          country?: string | null
+          cover_image_url?: string | null
+          created_at?: string
+          description?: string | null
+          email?: string | null
+          gallery_images?: string[] | null
+          id?: string
+          is_active?: boolean
+          is_featured?: boolean
+          is_verified?: boolean
+          logo_url?: string | null
+          name: string
+          phone?: string | null
+          products?: string | null
+          sector?: string | null
+          services?: string | null
+          slug: string
+          updated_at?: string
+          website?: string | null
+        }
+        Update: {
+          address?: string | null
+          city?: string | null
+          country?: string | null
+          cover_image_url?: string | null
+          created_at?: string
+          description?: string | null
+          email?: string | null
+          gallery_images?: string[] | null
+          id?: string
+          is_active?: boolean
+          is_featured?: boolean
+          is_verified?: boolean
+          logo_url?: string | null
+          name?: string
+          phone?: string | null
+          products?: string | null
+          sector?: string | null
+          services?: string | null
+          slug?: string
+          updated_at?: string
+          website?: string | null
+        }
+        Relationships: []
+      }
       business_news: {
         Row: {
           country: string | null
@@ -1284,6 +1356,48 @@ export type Database = {
           },
         ]
       }
+      homepage_hero_slides: {
+        Row: {
+          created_at: string
+          cta_label: string | null
+          cta_link: string | null
+          display_order: number | null
+          headline: string
+          id: string
+          image_url: string | null
+          is_active: boolean
+          subheadline: string | null
+          updated_at: string
+          video_url: string | null
+        }
+        Insert: {
+          created_at?: string
+          cta_label?: string | null
+          cta_link?: string | null
+          display_order?: number | null
+          headline: string
+          id?: string
+          image_url?: string | null
+          is_active?: boolean
+          subheadline?: string | null
+          updated_at?: string
+          video_url?: string | null
+        }
+        Update: {
+          created_at?: string
+          cta_label?: string | null
+          cta_link?: string | null
+          display_order?: number | null
+          headline?: string
+          id?: string
+          image_url?: string | null
+          is_active?: boolean
+          subheadline?: string | null
+          updated_at?: string
+          video_url?: string | null
+        }
+        Relationships: []
+      }
       hotel_rooms: {
         Row: {
           available_quantity: number | null
@@ -1385,6 +1499,117 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      investment_opportunities: {
+        Row: {
+          country: string | null
+          created_at: string
+          currency: string
+          id: string
+          image_url: string | null
+          incentives: string | null
+          industry: string
+          is_active: boolean
+          is_featured: boolean
+          market_overview: string | null
+          min_investment: number | null
+          opportunities: string | null
+          risks: string | null
+          slug: string
+          statistics: Json | null
+          summary: string | null
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          country?: string | null
+          created_at?: string
+          currency?: string
+          id?: string
+          image_url?: string | null
+          incentives?: string | null
+          industry: string
+          is_active?: boolean
+          is_featured?: boolean
+          market_overview?: string | null
+          min_investment?: number | null
+          opportunities?: string | null
+          risks?: string | null
+          slug: string
+          statistics?: Json | null
+          summary?: string | null
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          country?: string | null
+          created_at?: string
+          currency?: string
+          id?: string
+          image_url?: string | null
+          incentives?: string | null
+          industry?: string
+          is_active?: boolean
+          is_featured?: boolean
+          market_overview?: string | null
+          min_investment?: number | null
+          opportunities?: string | null
+          risks?: string | null
+          slug?: string
+          statistics?: Json | null
+          summary?: string | null
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      magazine_issues: {
+        Row: {
+          category: string | null
+          content: string | null
+          cover_image_url: string | null
+          created_at: string
+          id: string
+          is_published: boolean
+          issue_number: string | null
+          pdf_url: string | null
+          published_at: string
+          slug: string
+          summary: string | null
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          category?: string | null
+          content?: string | null
+          cover_image_url?: string | null
+          created_at?: string
+          id?: string
+          is_published?: boolean
+          issue_number?: string | null
+          pdf_url?: string | null
+          published_at?: string
+          slug: string
+          summary?: string | null
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          category?: string | null
+          content?: string | null
+          cover_image_url?: string | null
+          created_at?: string
+          id?: string
+          is_published?: boolean
+          issue_number?: string | null
+          pdf_url?: string | null
+          published_at?: string
+          slug?: string
+          summary?: string | null
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
       }
       media: {
         Row: {
@@ -2036,6 +2261,48 @@ export type Database = {
         }
         Relationships: []
       }
+      testimonials: {
+        Row: {
+          author_name: string
+          avatar_url: string | null
+          country: string | null
+          created_at: string
+          display_order: number | null
+          id: string
+          is_active: boolean
+          quote: string
+          rating: number | null
+          role: string | null
+          updated_at: string
+        }
+        Insert: {
+          author_name: string
+          avatar_url?: string | null
+          country?: string | null
+          created_at?: string
+          display_order?: number | null
+          id?: string
+          is_active?: boolean
+          quote: string
+          rating?: number | null
+          role?: string | null
+          updated_at?: string
+        }
+        Update: {
+          author_name?: string
+          avatar_url?: string | null
+          country?: string | null
+          created_at?: string
+          display_order?: number | null
+          id?: string
+          is_active?: boolean
+          quote?: string
+          rating?: number | null
+          role?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       tour_itinerary_days: {
         Row: {
           accommodation: string | null
@@ -2523,6 +2790,60 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      zula_tv_videos: {
+        Row: {
+          category: string | null
+          created_at: string
+          description: string | null
+          duration: string | null
+          guest_name: string | null
+          id: string
+          is_active: boolean
+          is_featured: boolean
+          organisation: string | null
+          published_at: string
+          slug: string
+          thumbnail_url: string | null
+          title: string
+          updated_at: string
+          video_url: string | null
+        }
+        Insert: {
+          category?: string | null
+          created_at?: string
+          description?: string | null
+          duration?: string | null
+          guest_name?: string | null
+          id?: string
+          is_active?: boolean
+          is_featured?: boolean
+          organisation?: string | null
+          published_at?: string
+          slug: string
+          thumbnail_url?: string | null
+          title: string
+          updated_at?: string
+          video_url?: string | null
+        }
+        Update: {
+          category?: string | null
+          created_at?: string
+          description?: string | null
+          duration?: string | null
+          guest_name?: string | null
+          id?: string
+          is_active?: boolean
+          is_featured?: boolean
+          organisation?: string | null
+          published_at?: string
+          slug?: string
+          thumbnail_url?: string | null
+          title?: string
+          updated_at?: string
+          video_url?: string | null
+        }
+        Relationships: []
       }
     }
     Views: {
