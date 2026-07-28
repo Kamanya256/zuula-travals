@@ -100,6 +100,8 @@ const AdminTestimonials = lazy(() => import("./pages/admin/AdminTestimonials"));
 const AdminHeroSlides = lazy(() => import("./pages/admin/AdminHeroSlides"));
 const BusinessNewsPage = lazy(() => import("./pages/BusinessNewsPage"));
 const BusinessNewsDetailPage = lazy(() => import("./pages/BusinessNewsDetailPage"));
+const PlanJourneyPage = lazy(() => import("./pages/PlanJourneyPage"));
+const AdminTripPlans = lazy(() => import("./pages/admin/AdminTripPlans"));
 
 const queryClient = new QueryClient();
 
@@ -168,6 +170,7 @@ const App = () => (
           <Route element={<Layout><Suspense fallback={<AdminFallback />}><MagazinePage /></Suspense></Layout>} path="/magazine" />
           <Route element={<Layout><Suspense fallback={<AdminFallback />}><MagazineDetailPage /></Suspense></Layout>} path="/magazine/:slug" />
           <Route element={<Layout><Suspense fallback={<AdminFallback />}><ZulaTVPage /></Suspense></Layout>} path="/zula-tv" />
+          <Route element={<Layout><Suspense fallback={<AdminFallback />}><PlanJourneyPage /></Suspense></Layout>} path="/plan" />
 
           {/* Admin routes */}
           <Route path="/admin" element={<A><AdminOverview /></A>} />
@@ -217,6 +220,7 @@ const App = () => (
           <Route path="/admin/zula-tv" element={<A><AdminZulaTV /></A>} />
           <Route path="/admin/testimonials" element={<A><AdminTestimonials /></A>} />
           <Route path="/admin/hero-slides" element={<A><AdminHeroSlides /></A>} />
+          <Route path="/admin/trip-plans" element={<A><AdminTripPlans /></A>} />
 
           <Route path="*" element={<NotFound />} />
         </Routes>
