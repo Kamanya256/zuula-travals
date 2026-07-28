@@ -57,6 +57,7 @@ serve(async (req) => {
       "tourism_news_feed", "package_offers", "accommodation_offers",
       "business_spotlights", "business_news", "chatbot_conversations", "chatbot_messages",
       "investment_opportunities", "business_directory", "magazine_issues", "zula_tv_videos", "testimonials", "homepage_hero_slides",
+      "trip_plans",
       "reviews", "contact_messages", "newsletter_subscriptions", "user_roles", "profiles",
     ];
 

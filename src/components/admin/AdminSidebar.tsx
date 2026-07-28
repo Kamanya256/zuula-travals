@@ -36,6 +36,7 @@ const servicesItems = [
   { title: "Venues", url: "/admin/venues", icon: Building },
   { title: "Courier Fleet", url: "/admin/courier-fleet", icon: Truck },
   { title: "Courier Bookings", url: "/admin/courier-bookings", icon: Truck },
+  { title: "Trip Plans", url: "/admin/trip-plans", icon: Calendar },
 ];
 
 const contentItems = [

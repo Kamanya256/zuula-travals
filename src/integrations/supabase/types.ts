@@ -2559,6 +2559,60 @@ export type Database = {
           },
         ]
       }
+      trip_plans: {
+        Row: {
+          budget_range: string | null
+          country: string | null
+          created_at: string
+          days: number
+          generated_itinerary: Json | null
+          id: string
+          interests: string[]
+          notes: string | null
+          start_date: string | null
+          status: string
+          travel_style: string | null
+          travellers: number
+          trip_name: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          budget_range?: string | null
+          country?: string | null
+          created_at?: string
+          days?: number
+          generated_itinerary?: Json | null
+          id?: string
+          interests?: string[]
+          notes?: string | null
+          start_date?: string | null
+          status?: string
+          travel_style?: string | null
+          travellers?: number
+          trip_name: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          budget_range?: string | null
+          country?: string | null
+          created_at?: string
+          days?: number
+          generated_itinerary?: Json | null
+          id?: string
+          interests?: string[]
+          notes?: string | null
+          start_date?: string | null
+          status?: string
+          travel_style?: string | null
+          travellers?: number
+          trip_name?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           id: string
