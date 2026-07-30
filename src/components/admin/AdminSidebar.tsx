@@ -37,6 +37,8 @@ const servicesItems = [
   { title: "Courier Fleet", url: "/admin/courier-fleet", icon: Truck },
   { title: "Courier Bookings", url: "/admin/courier-bookings", icon: Truck },
   { title: "Trip Plans", url: "/admin/trip-plans", icon: Calendar },
+  { title: "Itinerary Versions", url: "/admin/trip-plan-versions", icon: Calendar },
+  { title: "Vendor Websites", url: "/admin/vendor-sites", icon: Building },
 ];
 
 const contentItems = [
