@@ -10,20 +10,20 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "@/hooks/use-toast";
-import { CalendarDays, Compass, Loader2, MapPin, Sparkles, Trash2, Users } from "lucide-react";
+import ItineraryEditor, { type Itinerary } from "@/components/ItineraryEditor";
+import { CalendarDays, Compass, History, Loader2, MapPin, Save, Sparkles, Trash2, Users } from "lucide-react";
 
 const COUNTRIES = ["Uganda", "Kenya", "Tanzania", "Rwanda", "Burundi", "South Sudan", "DR Congo", "Multi-country East Africa"];
 const STYLES = ["Safari & Wildlife", "Cultural & Heritage", "Religious Pilgrimage", "Adventure & Hiking", "Beach & Marine", "Business & Investment", "Family Holiday", "Honeymoon"];
 const BUDGETS = ["Budget", "Mid-range", "Premium", "Luxury"];
 const INTERESTS = ["Gorilla trekking", "Big five safari", "Birding", "Hiking", "Water sports", "City tours", "Local cuisine", "Markets & crafts", "Historical sites", "Community & volunteering", "Photography", "Nightlife"];
 
-interface ItineraryDay { day: number; title: string; location: string; activities: string[]; stay?: string }
-interface Itinerary { summary: string; best_time: string; packing_tips: string[]; days: ItineraryDay[] }
 interface TripPlan {
   id: string; trip_name: string; country: string | null; travel_style: string | null;
   start_date: string | null; days: number; travellers: number; budget_range: string | null;
   interests: string[]; notes: string | null; generated_itinerary: unknown; created_at: string;
 }
+interface TripVersion { id: string; version: number; label: string | null; itinerary: unknown; created_at: string }
 
 export default function PlanJourneyPage() {
   const { user, loading } = useAuth();
@@ -40,8 +40,11 @@ export default function PlanJourneyPage() {
   const [notes, setNotes] = useState("");
 
   const [generating, setGenerating] = useState(false);
+  const [regenerating, setRegenerating] = useState(false);
   const [itinerary, setItinerary] = useState<Itinerary | null>(null);
   const [saved, setSaved] = useState<TripPlan[]>([]);
+  const [activePlanId, setActivePlanId] = useState<string | null>(null);
+  const [versions, setVersions] = useState<TripVersion[]>([]);
 
   useEffect(() => {
     document.title = "Plan My Journey | Zula Travels";
@@ -57,6 +60,16 @@ export default function PlanJourneyPage() {
     setSaved((data as unknown as TripPlan[]) || []);
   };
 
+  const loadVersions = async (planId: string | null) => {
+    if (!planId) { setVersions([]); return; }
+    const { data } = await supabase
+      .from("trip_plan_versions")
+      .select("id, version, label, itinerary, created_at")
+      .eq("trip_plan_id", planId)
+      .order("version", { ascending: false });
+    setVersions((data as unknown as TripVersion[]) || []);
+  };
+
   useEffect(() => { loadPlans(); /* eslint-disable-next-line */ }, [user]);
 
   const toggleInterest = (i: string) =>
@@ -66,6 +79,8 @@ export default function PlanJourneyPage() {
     if (!user) { navigate("/auth"); return; }
     setGenerating(true);
     setItinerary(null);
+    setActivePlanId(null);
+    setVersions([]);
     try {
       const { data, error } = await supabase.functions.invoke("generate-trip-plan", {
         body: { country, days, travellers, travel_style: style, budget_range: budget, interests, start_date: startDate || null, notes },
@@ -73,7 +88,7 @@ export default function PlanJourneyPage() {
       if (error) throw error;
       if ((data as { error?: string })?.error) throw new Error((data as { error: string }).error);
       setItinerary((data as { itinerary: Itinerary }).itinerary);
-      toast({ title: "Your journey is ready", description: "Review the plan below, then save it." });
+      toast({ title: "Your journey is ready", description: "Edit any day below, then save it." });
     } catch (e) {
       toast({ title: "Could not build the plan", description: (e as Error).message, variant: "destructive" });
     } finally {
@@ -81,23 +96,99 @@ export default function PlanJourneyPage() {
     }
   };
 
+  const regenerateDays = async (dayNumbers: number[], instruction: string) => {
+    if (!itinerary) return;
+    setRegenerating(true);
+    try {
+      const { data, error } = await supabase.functions.invoke("regenerate-trip-days", {
+        body: {
+          country, travellers, travel_style: style, budget_range: budget, interests, notes,
+          itinerary, day_numbers: dayNumbers, instruction,
+        },
+      });
+      if (error) throw error;
+      if ((data as { error?: string })?.error) throw new Error((data as { error: string }).error);
+      setItinerary((data as { itinerary: Itinerary }).itinerary);
+      toast({ title: "Days updated", description: `Re-generated day${dayNumbers.length === 1 ? "" : "s"} ${dayNumbers.join(", ")}.` });
+    } catch (e) {
+      toast({ title: "Re-generation failed", description: (e as Error).message, variant: "destructive" });
+    } finally {
+      setRegenerating(false);
+    }
+  };
+
+  const snapshotVersion = async (planId: string, plan: Itinerary, label: string) => {
+    const nextVersion = (versions[0]?.version || 0) + 1;
+    await supabase.from("trip_plan_versions").insert({
+      trip_plan_id: planId,
+      user_id: user!.id,
+      version: nextVersion,
+      label,
+      itinerary: plan as unknown as never,
+    });
+    loadVersions(planId);
+  };
+
   const savePlan = async () => {
     if (!user || !itinerary) return;
-    const { error } = await supabase.from("trip_plans").insert({
+    const name = tripName || `${days}-day ${country} journey`;
+
+    if (activePlanId) {
+      const { error } = await supabase.from("trip_plans")
+        .update({ trip_name: name, generated_itinerary: itinerary as unknown as never, days: itinerary.days?.length || days })
+        .eq("id", activePlanId);
+      if (error) { toast({ title: "Save failed", description: error.message, variant: "destructive" }); return; }
+      await snapshotVersion(activePlanId, itinerary, "Edited version");
+      toast({ title: "Journey updated", description: "A new version was saved to the history." });
+      loadPlans();
+      return;
+    }
+
+    const { data, error } = await supabase.from("trip_plans").insert({
       user_id: user.id,
-      trip_name: tripName || `${days}-day ${country} journey`,
+      trip_name: name,
       country, travel_style: style, budget_range: budget,
-      start_date: startDate || null, days, travellers, interests, notes,
+      start_date: startDate || null, days: itinerary.days?.length || days, travellers, interests, notes,
       generated_itinerary: itinerary as unknown as never,
       status: "saved",
-    });
+    }).select("id").single();
+
     if (error) { toast({ title: "Save failed", description: error.message, variant: "destructive" }); return; }
+    setActivePlanId(data.id);
+    setVersions([]);
+    await supabase.from("trip_plan_versions").insert({
+      trip_plan_id: data.id, user_id: user.id, version: 1, label: "Original plan",
+      itinerary: itinerary as unknown as never,
+    });
+    loadVersions(data.id);
     toast({ title: "Trip saved", description: "Find it under My saved journeys." });
     loadPlans();
   };
 
+  const openPlan = (p: TripPlan) => {
+    setItinerary(p.generated_itinerary as Itinerary);
+    setTripName(p.trip_name);
+    setActivePlanId(p.id);
+    if (p.country) setCountry(p.country);
+    if (p.travel_style) setStyle(p.travel_style);
+    if (p.budget_range) setBudget(p.budget_range);
+    setTravellers(p.travellers);
+    setDays(p.days);
+    setInterests(p.interests || []);
+    setNotes(p.notes || "");
+    loadVersions(p.id);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  const restoreVersion = (v: TripVersion) => {
+    setItinerary(v.itinerary as Itinerary);
+    toast({ title: `Version ${v.version} restored`, description: "Save to keep it as the current plan." });
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
   const removePlan = async (id: string) => {
     await supabase.from("trip_plans").delete().eq("id", id);
+    if (id === activePlanId) { setActivePlanId(null); setVersions([]); }
     loadPlans();
   };
 
@@ -109,7 +200,7 @@ export default function PlanJourneyPage() {
           <h1 className="text-4xl md:text-5xl font-display font-bold mb-4">Build your East African journey</h1>
           <p className="max-w-2xl text-primary-foreground/90">
             Tell us how you like to travel and our planner will shape a day-by-day route across Uganda, Kenya, Tanzania,
-            Rwanda and beyond. Save it, refine it, and our team turns it into a confirmed booking.
+            Rwanda and beyond. Edit any day, keep every version, and re-generate only the days you want to change.
           </p>
         </div>
       </section>
@@ -214,10 +305,15 @@ export default function PlanJourneyPage() {
               <Card>
                 <CardContent className="pt-6 space-y-4">
                   <h2 className="text-2xl font-display font-bold">{tripName || `${days}-day ${country} journey`}</h2>
-                  <p className="text-muted-foreground">{itinerary.summary}</p>
+                  <Textarea
+                    rows={3}
+                    value={itinerary.summary || ""}
+                    onChange={(e) => setItinerary({ ...itinerary, summary: e.target.value })}
+                    aria-label="Trip summary"
+                  />
                   <div className="flex flex-wrap gap-3 text-sm">
                     <span className="flex items-center gap-1.5"><MapPin className="w-4 h-4 text-primary" /> {country}</span>
-                    <span className="flex items-center gap-1.5"><CalendarDays className="w-4 h-4 text-primary" /> {days} days</span>
+                    <span className="flex items-center gap-1.5"><CalendarDays className="w-4 h-4 text-primary" /> {itinerary.days?.length || days} days</span>
                     <span className="flex items-center gap-1.5"><Users className="w-4 h-4 text-primary" /> {travellers} travellers</span>
                   </div>
                   <p className="text-sm"><span className="font-medium">Best time to travel:</span> {itinerary.best_time}</p>
@@ -225,35 +321,41 @@ export default function PlanJourneyPage() {
                     {itinerary.packing_tips?.map((t) => <Badge key={t} variant="secondary">{t}</Badge>)}
                   </div>
                   <div className="flex flex-wrap gap-3 pt-2">
-                    <Button onClick={savePlan} className="rounded-full">Save this journey</Button>
+                    <Button onClick={savePlan} className="rounded-full">
+                      <Save className="w-4 h-4 mr-2" /> {activePlanId ? "Save new version" : "Save this journey"}
+                    </Button>
                     <Button asChild variant="outline" className="rounded-full"><Link to="/booking">Request a booking</Link></Button>
                   </div>
                 </CardContent>
               </Card>
 
-              <div className="space-y-4">
-                {itinerary.days?.map((d) => (
-                  <Card key={d.day}>
-                    <CardContent className="pt-6">
-                      <div className="flex items-start gap-4">
-                        <div className="shrink-0 w-12 h-12 rounded-full bg-primary/10 text-primary flex flex-col items-center justify-center text-xs font-semibold">
-                          <span className="text-[10px] uppercase">Day</span>{d.day}
+              <ItineraryEditor
+                itinerary={itinerary}
+                onChange={setItinerary}
+                onRegenerate={regenerateDays}
+                regenerating={regenerating}
+              />
+
+              {versions.length > 0 && (
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2 font-display text-lg">
+                      <History className="w-5 h-5 text-primary" /> Version history
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-2">
+                    {versions.map((v) => (
+                      <div key={v.id} className="flex items-center justify-between gap-3 border-b border-border last:border-0 py-2">
+                        <div>
+                          <p className="text-sm font-medium">Version {v.version} — {v.label || "Saved"}</p>
+                          <p className="text-xs text-muted-foreground">{new Date(v.created_at).toLocaleString()}</p>
                         </div>
-                        <div className="flex-1">
-                          <h3 className="font-display font-semibold text-lg">{d.title}</h3>
-                          <p className="text-sm text-muted-foreground flex items-center gap-1.5 mb-3"><MapPin className="w-3.5 h-3.5" /> {d.location}</p>
-                          <ul className="space-y-1.5 text-sm">
-                            {d.activities?.map((a, i) => (
-                              <li key={i} className="flex gap-2"><span className="text-primary">•</span><span>{a}</span></li>
-                            ))}
-                          </ul>
-                          {d.stay && <p className="text-xs text-muted-foreground mt-3">Overnight: {d.stay}</p>}
-                        </div>
+                        <Button size="sm" variant="outline" className="rounded-full" onClick={() => restoreVersion(v)}>Restore</Button>
                       </div>
-                    </CardContent>
-                  </Card>
-                ))}
-              </div>
+                    ))}
+                  </CardContent>
+                </Card>
+              )}
             </div>
           )}
 
@@ -262,7 +364,7 @@ export default function PlanJourneyPage() {
               <h2 className="text-2xl font-display font-bold mb-4">My saved journeys</h2>
               <div className="grid sm:grid-cols-2 gap-4">
                 {saved.map((p) => (
-                  <Card key={p.id}>
+                  <Card key={p.id} className={p.id === activePlanId ? "border-primary" : undefined}>
                     <CardContent className="pt-6">
                       <div className="flex items-start justify-between gap-3">
                         <div>
@@ -273,9 +375,8 @@ export default function PlanJourneyPage() {
                           <Trash2 className="w-4 h-4" />
                         </Button>
                       </div>
-                      <Button variant="link" className="px-0 mt-2"
-                        onClick={() => { setItinerary(p.generated_itinerary as Itinerary); setTripName(p.trip_name); window.scrollTo({ top: 0, behavior: "smooth" }); }}>
-                        View itinerary
+                      <Button variant="link" className="px-0 mt-2" onClick={() => openPlan(p)}>
+                        Open in editor
                       </Button>
                     </CardContent>
                   </Card>
