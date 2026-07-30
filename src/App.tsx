@@ -102,6 +102,11 @@ const BusinessNewsPage = lazy(() => import("./pages/BusinessNewsPage"));
 const BusinessNewsDetailPage = lazy(() => import("./pages/BusinessNewsDetailPage"));
 const PlanJourneyPage = lazy(() => import("./pages/PlanJourneyPage"));
 const AdminTripPlans = lazy(() => import("./pages/admin/AdminTripPlans"));
+const AdminTripPlanVersions = lazy(() => import("./pages/admin/AdminTripPlanVersions"));
+const VendorPortalPage = lazy(() => import("./pages/VendorPortalPage"));
+const VendorSitePage = lazy(() => import("./pages/VendorSitePage"));
+const VendorsPage = lazy(() => import("./pages/VendorsPage"));
+const AdminVendorSites = lazy(() => import("./pages/admin/AdminVendorSites"));
 
 const queryClient = new QueryClient();
 
@@ -171,6 +176,9 @@ const App = () => (
           <Route element={<Layout><Suspense fallback={<AdminFallback />}><MagazineDetailPage /></Suspense></Layout>} path="/magazine/:slug" />
           <Route element={<Layout><Suspense fallback={<AdminFallback />}><ZulaTVPage /></Suspense></Layout>} path="/zula-tv" />
           <Route element={<Layout><Suspense fallback={<AdminFallback />}><PlanJourneyPage /></Suspense></Layout>} path="/plan" />
+          <Route element={<Layout><Suspense fallback={<AdminFallback />}><VendorsPage /></Suspense></Layout>} path="/vendors" />
+          <Route element={<Layout><Suspense fallback={<AdminFallback />}><VendorPortalPage /></Suspense></Layout>} path="/vendor" />
+          <Route element={<Layout><Suspense fallback={<AdminFallback />}><VendorSitePage /></Suspense></Layout>} path="/v/:slug" />
 
           {/* Admin routes */}
           <Route path="/admin" element={<A><AdminOverview /></A>} />
@@ -221,6 +229,8 @@ const App = () => (
           <Route path="/admin/testimonials" element={<A><AdminTestimonials /></A>} />
           <Route path="/admin/hero-slides" element={<A><AdminHeroSlides /></A>} />
           <Route path="/admin/trip-plans" element={<A><AdminTripPlans /></A>} />
+          <Route path="/admin/trip-plan-versions" element={<A><AdminTripPlanVersions /></A>} />
+          <Route path="/admin/vendor-sites" element={<A><AdminVendorSites /></A>} />
 
           <Route path="*" element={<NotFound />} />
         </Routes>
