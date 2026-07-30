@@ -2559,6 +2559,44 @@ export type Database = {
           },
         ]
       }
+      trip_plan_versions: {
+        Row: {
+          created_at: string
+          id: string
+          itinerary: Json
+          label: string | null
+          trip_plan_id: string
+          user_id: string
+          version: number
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          itinerary: Json
+          label?: string | null
+          trip_plan_id: string
+          user_id: string
+          version?: number
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          itinerary?: Json
+          label?: string | null
+          trip_plan_id?: string
+          user_id?: string
+          version?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "trip_plan_versions_trip_plan_id_fkey"
+            columns: ["trip_plan_id"]
+            isOneToOne: false
+            referencedRelation: "trip_plans"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       trip_plans: {
         Row: {
           budget_range: string | null
@@ -2628,6 +2666,84 @@ export type Database = {
           id?: string
           role?: Database["public"]["Enums"]["app_role"]
           user_id?: string
+        }
+        Relationships: []
+      }
+      vendor_sites: {
+        Row: {
+          about: string | null
+          address: string | null
+          business_name: string
+          category: string | null
+          city: string | null
+          country: string | null
+          cover_url: string | null
+          created_at: string
+          email: string | null
+          gallery: Json
+          id: string
+          logo_url: string | null
+          opening_hours: string | null
+          phone: string | null
+          published: boolean
+          services: Json
+          slug: string
+          socials: Json
+          tagline: string | null
+          updated_at: string
+          user_id: string
+          website: string | null
+          whatsapp: string | null
+        }
+        Insert: {
+          about?: string | null
+          address?: string | null
+          business_name: string
+          category?: string | null
+          city?: string | null
+          country?: string | null
+          cover_url?: string | null
+          created_at?: string
+          email?: string | null
+          gallery?: Json
+          id?: string
+          logo_url?: string | null
+          opening_hours?: string | null
+          phone?: string | null
+          published?: boolean
+          services?: Json
+          slug: string
+          socials?: Json
+          tagline?: string | null
+          updated_at?: string
+          user_id: string
+          website?: string | null
+          whatsapp?: string | null
+        }
+        Update: {
+          about?: string | null
+          address?: string | null
+          business_name?: string
+          category?: string | null
+          city?: string | null
+          country?: string | null
+          cover_url?: string | null
+          created_at?: string
+          email?: string | null
+          gallery?: Json
+          id?: string
+          logo_url?: string | null
+          opening_hours?: string | null
+          phone?: string | null
+          published?: boolean
+          services?: Json
+          slug?: string
+          socials?: Json
+          tagline?: string | null
+          updated_at?: string
+          user_id?: string
+          website?: string | null
+          whatsapp?: string | null
         }
         Relationships: []
       }
@@ -2913,7 +3029,7 @@ export type Database = {
       }
     }
     Enums: {
-      app_role: "admin" | "moderator" | "user"
+      app_role: "admin" | "moderator" | "user" | "vendor"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -3041,7 +3157,7 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
-      app_role: ["admin", "moderator", "user"],
+      app_role: ["admin", "moderator", "user", "vendor"],
     },
   },
 } as const
