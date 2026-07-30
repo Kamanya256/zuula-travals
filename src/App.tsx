@@ -176,6 +176,9 @@ const App = () => (
           <Route element={<Layout><Suspense fallback={<AdminFallback />}><MagazineDetailPage /></Suspense></Layout>} path="/magazine/:slug" />
           <Route element={<Layout><Suspense fallback={<AdminFallback />}><ZulaTVPage /></Suspense></Layout>} path="/zula-tv" />
           <Route element={<Layout><Suspense fallback={<AdminFallback />}><PlanJourneyPage /></Suspense></Layout>} path="/plan" />
+          <Route element={<Layout><Suspense fallback={<AdminFallback />}><VendorsPage /></Suspense></Layout>} path="/vendors" />
+          <Route element={<Layout><Suspense fallback={<AdminFallback />}><VendorPortalPage /></Suspense></Layout>} path="/vendor" />
+          <Route element={<Layout><Suspense fallback={<AdminFallback />}><VendorSitePage /></Suspense></Layout>} path="/v/:slug" />
 
           {/* Admin routes */}
           <Route path="/admin" element={<A><AdminOverview /></A>} />
