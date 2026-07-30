@@ -102,6 +102,11 @@ const BusinessNewsPage = lazy(() => import("./pages/BusinessNewsPage"));
 const BusinessNewsDetailPage = lazy(() => import("./pages/BusinessNewsDetailPage"));
 const PlanJourneyPage = lazy(() => import("./pages/PlanJourneyPage"));
 const AdminTripPlans = lazy(() => import("./pages/admin/AdminTripPlans"));
+const AdminTripPlanVersions = lazy(() => import("./pages/admin/AdminTripPlanVersions"));
+const VendorPortalPage = lazy(() => import("./pages/VendorPortalPage"));
+const VendorSitePage = lazy(() => import("./pages/VendorSitePage"));
+const VendorsPage = lazy(() => import("./pages/VendorsPage"));
+const AdminVendorSites = lazy(() => import("./pages/admin/AdminVendorSites"));
 
 const queryClient = new QueryClient();
 
